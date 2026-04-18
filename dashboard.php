@@ -1,8 +1,18 @@
 <?php
+define('SKIP_API_HEADERS', true);
 require_once __DIR__ . '/api/auth_helpers.php';
 require_page_auth();
 $loggedInUserName = get_logged_in_user_name();
 $loggedInUserId = get_logged_in_user_id();
+
+// Fetch user UID and type for API displays
+require_once __DIR__ . '/api/db_config.php';
+$uStmt = $conn->prepare("SELECT uid, user_type FROM iot_users WHERE id = ?");
+$uStmt->bind_param("i", $loggedInUserId);
+$uStmt->execute();
+$uStmt->bind_result($userUid, $userType);
+$uStmt->fetch();
+$uStmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -653,13 +663,27 @@ $loggedInUserId = get_logged_in_user_id();
     </div>
 
     <div id="conn-details" class="conn-info">
-        <strong>ESP32 CONNECTION URL:</strong>
-        <span class="copy-hint">Copy this into your serverUrl variable in Arduino IDE:</span>
+        <div style="font-size: 0.8rem; color: #aeb5c0; margin-bottom: 4px;">READ API (ESP32):</div>
         <div class="url-row">
             <code id="esp-url" class="url-display" style="margin-top:0; flex:1 1 auto;"></code>
-            <button id="copy-url-btn" class="copy-url-btn" type="button" aria-label="Copy device URL" title="Copy device URL">
+            <button id="copy-url-btn" class="copy-url-btn" type="button" aria-label="Copy read URL" title="Copy read URL">
                 <span class="copy-icon" aria-hidden="true"></span>
             </button>
+        </div>
+
+        <div style="font-size: 0.8rem; color: #aeb5c0; margin-top: 12px; margin-bottom: 4px;">WEBHOOK API (TELEMETRY):</div>
+        <div class="url-row">
+            <code id="webhook-url" class="url-display" style="margin-top:0; flex:1 1 auto;"></code>
+            <button id="copy-webhook-btn" class="copy-url-btn" type="button" aria-label="Copy webhook URL" title="Copy webhook URL">
+                <span class="copy-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div style="margin-top: 14px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <span style="color: #64ffda;">Plan: <?php echo strtoupper($userType); ?></span>
+            </div>
+            <a id="telemetry-link" href="#" style="color: var(--primary); text-decoration: none; font-weight: 600;">VIEW HISTORY →</a>
         </div>
     </div>
 
@@ -686,7 +710,9 @@ $loggedInUserId = get_logged_in_user_id();
         currentDevice: '',
         toastTimer: null
     };
-    const currentUserId = <?php echo (int)$loggedInUserId; ?>;
+    const userId = "<?php echo $loggedInUserId; ?>";
+    const userUid = "<?php echo $userUid; ?>";
+    const userType = "<?php echo $userType; ?>";
 
     function escapeHtml(value) {
         return String(value)
@@ -1020,10 +1046,14 @@ $loggedInUserId = get_logged_in_user_id();
             return;
         }
 
-        const baseUrl = window.location.origin + window.location.pathname.replace(/dashboard\.php$/, '');
-        const fullUrl = baseUrl + 'api/read.php?device_id=' + encodeURIComponent(state.currentDevice) + '&user_id=' + encodeURIComponent(String(currentUserId));
+        const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+        const readUrl = `${baseUrl}/api/read.php?device_id=${encodeURIComponent(state.currentDevice)}&uid=${encodeURIComponent(userUid)}`;
+        const webhookUrl = `${baseUrl}/api/webhook.php?device_id=${encodeURIComponent(state.currentDevice)}&uid=${encodeURIComponent(userUid)}`;
 
-        document.getElementById('esp-url').textContent = fullUrl;
+        document.getElementById('esp-url').textContent = readUrl;
+        document.getElementById('webhook-url').textContent = webhookUrl;
+        document.getElementById('telemetry-link').href = `telemetry.php?device_id=${encodeURIComponent(state.currentDevice)}`;
+        
         setPanelVisibility(true);
         loadFeatures();
     }
@@ -1115,6 +1145,19 @@ $loggedInUserId = get_logged_in_user_id();
     document.getElementById('add-device-btn').addEventListener('click', addDevice);
     document.getElementById('delete-device-btn').addEventListener('click', deleteSelectedDevice);
     document.getElementById('copy-url-btn').addEventListener('click', copyDeviceUrl);
+    document.getElementById('copy-webhook-btn').addEventListener('click', async function() {
+        const urlText = document.getElementById('webhook-url').textContent.trim();
+        if (!urlText) {
+            showToast('Select a device first', 'error');
+            return;
+        }
+        try {
+            await copyTextToClipboard(urlText);
+            showToast('Webhook URL copied', 'success');
+        } catch (error) {
+            showToast('Could not copy URL', 'error');
+        }
+    });
 
     loadDevices();
     handleDeviceChange('');

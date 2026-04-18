@@ -4,7 +4,7 @@ require_once 'state_helpers.php';
 require_once 'auth_helpers.php';
 $device_id = $_GET['device_id'] ?? '';
 $format = $_GET['format'] ?? 'state';
-$userId = resolve_read_user_id();
+$userId = resolve_read_user_id($conn);
 
 if ($device_id === '') {
 	echo json_encode(["error" => "Missing device_id"]);
