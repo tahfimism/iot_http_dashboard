@@ -8,6 +8,7 @@ $loggedInUserId = get_logged_in_user_id();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>IoT Manager</title>
     <style>
         :root {
@@ -588,8 +589,37 @@ $loggedInUserId = get_logged_in_user_id();
             border-color: rgba(255, 82, 82, 0.3);
         }
 
-        @media (max-width: 700px) {
-            .grid { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header, .panel { padding: 16px; margin-bottom: 12px; }
+            .grid { 
+                grid-template-columns: 1fr; 
+                gap: 12px;
+            }
+            .device-list {
+                grid-template-columns: 1fr;
+            }
+            .topbar {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                font-size: 0.85rem;
+            }
+            .logout-link {
+                padding: 6px 0;
+            }
+            .header h1 { font-size: 1.5rem; margin: 0; }
+            .device-controls {
+                grid-template-columns: 1fr;
+            }
+            .card-actions {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .card-actions .btn {
+                width: 100%;
+            }
         }
 
         @keyframes slideUp {
