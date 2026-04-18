@@ -1,0 +1,11 @@
+127.0.0.1/firefly_db/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=firefly_db
+Your SQL query has been executed successfully.
+
+describe device_status;
+
+
+
+id	int(11)	NO	PRI	NULL	auto_increment	
+device_id	varchar(50)	NO	UNI	NULL		
+state_json	text	NO		NULL		
+last_seen	timestamp	NO		current_timestamp()	on update current_timestamp()	
