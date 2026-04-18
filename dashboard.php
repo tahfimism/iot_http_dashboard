@@ -92,11 +92,27 @@ $loggedInUserId = get_logged_in_user_id();
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
             border-radius: 6px;
-            padding: 11px 14px;
+            padding: 12px 14px;
             margin-top: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: inherit;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0a0a0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        option {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 10px;
         }
 
         select:hover, input:hover {
@@ -334,7 +350,7 @@ $loggedInUserId = get_logged_in_user_id();
             width: 100%;
             margin-top: 10px;
             padding: 12px 16px;
-            border: 0;
+            border: 1px solid transparent;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -343,23 +359,14 @@ $loggedInUserId = get_logged_in_user_id();
             transition: all 0.2s ease;
             text-transform: uppercase;
             position: relative;
-            overflow: hidden;
+            vertical-align: middle;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
+        /* Shimmer effect removed to eliminate glow */
 
         .toggle-btn {
             width: 52px;
@@ -398,12 +405,12 @@ $loggedInUserId = get_logged_in_user_id();
             box-shadow: none;
         }
 
-        .toggle-btn:hover {
-            background: rgba(13, 148, 136, 0.3);
+        .toggle-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        .toggle-btn:active {
-            background: rgba(13, 148, 136, 0.35);
+        .toggle-btn.active:hover {
+            background: #00f881;
         }
 
         .number-input {
@@ -419,6 +426,7 @@ $loggedInUserId = get_logged_in_user_id();
             text-align: left;
             font-family: inherit;
             transition: all 0.2s ease;
+            vertical-align: middle;
         }
 
         .number-input:hover {
@@ -448,58 +456,47 @@ $loggedInUserId = get_logged_in_user_id();
             padding: 0 16px;
             font-size: 12px;
             min-width: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-on {
-            background: linear-gradient(135deg, var(--primary), #00c853);
+            background: var(--primary);
             color: #000;
-            box-shadow: 0 4px 12px rgba(0, 230, 118, 0.15);
         }
 
         .btn-on:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 230, 118, 0.2);
+            background: #00f881;
         }
 
         .btn-off {
-            background: linear-gradient(135deg, #555, #444);
+            background: #444;
             color: #fff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .btn-off:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #666, #555);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background: #555;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #ff2a54);
+            background: var(--danger);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(255, 82, 82, 0.15);
         }
 
         .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 82, 82, 0.2);
+            background: #ff7676;
         }
 
         .btn-accent {
-            background: linear-gradient(135deg, var(--accent), #06b6d4);
+            background: var(--accent);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
         }
 
         .btn-accent:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(13, 148, 136, 0.2);
+            background: #14b8a6;
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
         .text-action {
