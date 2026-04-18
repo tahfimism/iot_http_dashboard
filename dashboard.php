@@ -12,9 +12,9 @@ $loggedInUserId = get_logged_in_user_id();
     <style>
         :root {
             --primary: #00e676;
-            --bg: #0a0e27;
-            --card: #1a1f3a;
-            --accent: #2979ff;
+            --bg: #0a0a0a;
+            --card: #1a1a1a;
+            --accent: #0d9488;
             --danger: #ff5252;
             --text-muted: #a0a0a0;
         }
@@ -23,8 +23,8 @@ $loggedInUserId = get_logged_in_user_id();
         body {
             margin: 0;
             padding: 20px;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, #1a2847 50%, #0f1d3a 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
             color: #fff;
             min-height: 100vh;
         }
@@ -36,8 +36,8 @@ $loggedInUserId = get_logged_in_user_id();
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at 20% 50%, rgba(41, 121, 255, 0.08) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 80%, rgba(0, 230, 118, 0.05) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 20% 50%, rgba(13, 148, 136, 0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(0, 230, 118, 0.04) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
         }
@@ -61,8 +61,8 @@ $loggedInUserId = get_logged_in_user_id();
             text-decoration: none;
             font-size: 0.9rem;
             padding: 8px 12px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            border-radius: 6px;
+            transition: background 0.2s ease;
         }
 
         .logout-link:hover {
@@ -71,13 +71,13 @@ $loggedInUserId = get_logged_in_user_id();
         }
 
         .header, .panel {
-            background: linear-gradient(135deg, #1e2749, #16213e);
-            border: 1px solid rgba(41, 121, 255, 0.15);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
+            background: rgba(22, 22, 22, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
         }
 
         .header-note {
@@ -88,10 +88,10 @@ $loggedInUserId = get_logged_in_user_id();
 
         select, input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(41, 121, 255, 0.2);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
-            border-radius: 10px;
+            border-radius: 6px;
             padding: 11px 14px;
             margin-top: 8px;
             font-size: 14px;
@@ -100,7 +100,7 @@ $loggedInUserId = get_logged_in_user_id();
         }
 
         select:hover, input:hover {
-            border-color: rgba(41, 121, 255, 0.4);
+            border-color: rgba(13, 148, 136, 0.3);
             background: rgba(255, 255, 255, 0.08);
         }
 
@@ -108,19 +108,19 @@ $loggedInUserId = get_logged_in_user_id();
             outline: none;
             border-color: var(--accent);
             background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
         }
 
         .conn-info {
             display: none;
-            background: linear-gradient(135deg, rgba(26, 35, 126, 0.3), rgba(41, 121, 255, 0.1));
-            border: 1px solid rgba(41, 121, 255, 0.25);
-            border-left: 5px solid var(--accent);
-            border-radius: 14px;
+            background: rgba(13, 148, 136, 0.05);
+            border: 1px solid rgba(13, 148, 136, 0.2);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
             padding: 16px;
             margin-bottom: 16px;
             font-family: 'Courier New', monospace;
-            box-shadow: 0 4px 12px rgba(41, 121, 255, 0.1);
+            box-shadow: 0 2px 6px rgba(13, 148, 136, 0.05);
         }
 
         .url-display {
@@ -208,7 +208,7 @@ $loggedInUserId = get_logged_in_user_id();
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 14px;
         }
 
@@ -220,29 +220,29 @@ $loggedInUserId = get_logged_in_user_id();
         }
 
         .device-card {
-            border: 1.5px solid rgba(41, 121, 255, 0.2);
-            background: linear-gradient(135deg, rgba(30, 39, 73, 0.6), rgba(26, 31, 58, 0.4));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(28, 28, 28, 0.5);
             color: #fff;
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: 8px;
+            padding: 16px;
             cursor: pointer;
             text-align: left;
-            transition: all 0.3s ease;
-            min-height: 96px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.2s ease, background 0.2s ease;
+            min-height: 90px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .device-card:hover {
-            border-color: rgba(41, 121, 255, 0.5);
-            background: linear-gradient(135deg, rgba(30, 39, 73, 0.8), rgba(26, 31, 58, 0.6));
+            border-color: rgba(13, 148, 136, 0.4);
+            background: linear-gradient(135deg, #2d2d2d, #222222);
             transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(41, 121, 255, 0.15);
+            box-shadow: 0 6px 12px rgba(13, 148, 136, 0.08);
         }
 
         .device-card.active {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(0, 230, 118, 0.2), rgba(26, 63, 47, 0.5));
-            box-shadow: 0 0 0 1.5px rgba(0, 230, 118, 0.3) inset, 0 12px 28px rgba(0, 230, 118, 0.15);
+            border-color: var(--accent);
+            background: rgba(13, 148, 136, 0.1);
+            box-shadow: 0 0 0 1px var(--accent) inset;
         }
 
         .device-card-head {
@@ -259,15 +259,15 @@ $loggedInUserId = get_logged_in_user_id();
             display: grid;
             place-items: center;
             flex: 0 0 auto;
-            background: rgba(41, 121, 255, 0.15);
-            border: 1px solid rgba(41, 121, 255, 0.4);
-            color: #b9d3ff;
+            background: rgba(13, 148, 136, 0.12);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            color: #5eead4;
             transition: all 0.3s ease;
         }
 
         .device-card.active .device-card-icon {
-            background: rgba(0, 230, 118, 0.2);
-            border-color: rgba(0, 230, 118, 0.5);
+            background: rgba(0, 230, 118, 0.15);
+            border-color: rgba(0, 230, 118, 0.4);
             color: #c7ffd8;
         }
 
@@ -289,41 +289,58 @@ $loggedInUserId = get_logged_in_user_id();
         }
 
         .device-empty {
-            border: 1px dashed rgba(41, 121, 255, 0.3);
+            border: 1px dashed rgba(13, 148, 136, 0.25);
             border-radius: 10px;
             padding: 14px;
             color: var(--text-muted);
             font-size: 0.9rem;
-            background: rgba(41, 121, 255, 0.05);
+            background: rgba(13, 148, 136, 0.04);
         }
 
         .card {
-            background: linear-gradient(135deg, rgba(30, 39, 73, 0.5), rgba(26, 31, 58, 0.3));
-            border: 1px solid rgba(41, 121, 255, 0.15);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            border-left: 4px solid rgba(41, 121, 255, 0.4);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            background: rgba(28, 28, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
         }
 
-        .card:hover {
-            border-left-color: var(--accent);
-            box-shadow: 0 8px 20px rgba(41, 121, 255, 0.1);
+        .card:hover { border-color: rgba(255, 255, 255, 0.12); }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            text-transform: none;
+            letter-spacing: 0.1px;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-value {
+            display: none;
         }
 
         .btn {
             width: 100%;
             margin-top: 10px;
-            padding: 11px 14px;
+            padding: 12px 16px;
             border: 0;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 13px;
             letter-spacing: 0.5px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-transform: uppercase;
             position: relative;
             overflow: hidden;
@@ -344,49 +361,141 @@ $loggedInUserId = get_logged_in_user_id();
             left: 100%;
         }
 
+        .toggle-btn {
+            width: 52px;
+            padding: 0;
+            border: none;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            position: relative;
+            height: 26px;
+            display: block;
+            margin: 8px 0 8px auto;
+            overflow: hidden;
+        }
+
+        .toggle-btn::before {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #777;
+            left: 2px;
+            top: 2px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+        }
+
+        .toggle-btn.active::before {
+            left: calc(100% - 24px);
+            background: #fff;
+            box-shadow: none;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(13, 148, 136, 0.3);
+        }
+
+        .toggle-btn:active {
+            background: rgba(13, 148, 136, 0.35);
+        }
+
+        .number-input {
+            width: 100%;
+            height: 38px;
+            padding: 0 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 4px;
+            text-align: left;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .number-input:hover {
+            border-color: rgba(13, 148, 136, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(13, 148, 136, 0.08);
+            box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1);
+        }
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .card-actions .btn {
+            flex: none;
+            margin: 0;
+            height: 38px;
+            padding: 0 16px;
+            font-size: 12px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .btn-on {
             background: linear-gradient(135deg, var(--primary), #00c853);
             color: #000;
-            box-shadow: 0 8px 20px rgba(0, 230, 118, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 230, 118, 0.15);
         }
 
         .btn-on:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(0, 230, 118, 0.35);
+            box-shadow: 0 6px 16px rgba(0, 230, 118, 0.2);
         }
 
         .btn-off {
             background: linear-gradient(135deg, #555, #444);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .btn-off:hover {
             transform: translateY(-2px);
             background: linear-gradient(135deg, #666, #555);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .btn-danger {
             background: linear-gradient(135deg, var(--danger), #ff2a54);
             color: #fff;
-            box-shadow: 0 8px 20px rgba(255, 82, 82, 0.25);
+            box-shadow: 0 4px 12px rgba(255, 82, 82, 0.15);
         }
 
         .btn-danger:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(255, 82, 82, 0.35);
+            box-shadow: 0 6px 16px rgba(255, 82, 82, 0.2);
         }
 
         .btn-accent {
-            background: linear-gradient(135deg, var(--accent), #1e53e5);
+            background: linear-gradient(135deg, var(--accent), #06b6d4);
             color: #fff;
-            box-shadow: 0 8px 20px rgba(41, 121, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
         }
 
         .btn-accent:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(41, 121, 255, 0.35);
+            box-shadow: 0 6px 16px rgba(13, 148, 136, 0.2);
         }
 
         .btn:active {
@@ -432,12 +541,12 @@ $loggedInUserId = get_logged_in_user_id();
         }
 
         .management {
-            background: linear-gradient(135deg, rgba(20, 24, 40, 0.5), rgba(15, 29, 58, 0.3));
-            border: 1px dashed rgba(41, 121, 255, 0.3);
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(15, 15, 15, 0.3));
+            border: 1px dashed rgba(13, 148, 136, 0.25);
             border-radius: 12px;
             padding: 16px;
             margin-top: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .device-controls {
@@ -464,9 +573,9 @@ $loggedInUserId = get_logged_in_user_id();
             border-left: 4px solid var(--primary);
             border-radius: 12px;
             padding: 14px 16px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             z-index: 9999;
-            border: 1px solid rgba(41, 121, 255, 0.2);
+            border: 1px solid rgba(13, 148, 136, 0.15);
             font-weight: 500;
             font-size: 14px;
         }
@@ -685,58 +794,66 @@ $loggedInUserId = get_logged_in_user_id();
             const card = document.createElement('div');
             card.className = 'card';
 
-            const title = document.createElement('small');
-            title.style.color = '#888';
-            title.textContent = key;
+            // Top Row: Key and Remove button
+            const head = document.createElement('div');
+            head.className = 'card-title';
+            
+            const keyLabel = document.createElement('span');
+            keyLabel.textContent = key;
+            head.appendChild(keyLabel);
 
-            const valueLabel = document.createElement('h2');
-            valueLabel.style.margin = '10px 0';
-            valueLabel.textContent = typeof value === 'object' ? JSON.stringify(value) : String(value);
-
-            card.appendChild(title);
-            card.appendChild(valueLabel);
+            const removeBtn = document.createElement('a');
+            removeBtn.className = 'text-action text-danger';
+            removeBtn.style.marginTop = '0';
+            removeBtn.style.padding = '0';
+            removeBtn.href = '#';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.title = 'Remove ' + key;
+            removeBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                removeFeature(key);
+            });
+            head.appendChild(removeBtn);
+            card.appendChild(head);
 
             if (fieldType === 'binary' && isBinaryValue(value)) {
                 const numericValue = String(value) === '1' || value === true ? 1 : 0;
-                const nextValue = numericValue === 1 ? 0 : 1;
+                const isActive = numericValue === 1;
 
                 const toggleBtn = document.createElement('button');
                 toggleBtn.type = 'button';
-                toggleBtn.className = 'btn ' + (nextValue === 1 ? 'btn-on' : 'btn-off');
-                toggleBtn.textContent = nextValue === 1 ? 'ON' : 'OFF';
+                toggleBtn.className = 'toggle-btn' + (isActive ? ' active' : '');
                 toggleBtn.addEventListener('click', function () {
+                    const nextValue = isActive ? 0 : 1;
                     setFeatureValue(key, nextValue, 'binary');
                 });
 
                 card.appendChild(toggleBtn);
             } else {
+                const actions = document.createElement('div');
+                actions.className = 'card-actions';
+
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.className = 'mini-input';
+                input.className = 'number-input';
                 input.value = typeof value === 'object' ? JSON.stringify(value) : String(value);
+                input.placeholder = 'Value';
+                actions.appendChild(input);
 
                 const updateBtn = document.createElement('button');
                 updateBtn.type = 'button';
-                updateBtn.className = 'btn btn-on';
-                updateBtn.textContent = 'UPDATE';
+                updateBtn.className = 'btn btn-accent';
+                updateBtn.style.marginTop = '0';
+                updateBtn.style.width = 'auto';
+                updateBtn.textContent = 'SET';
                 updateBtn.addEventListener('click', function () {
                     setFeatureValue(key, input.value, fieldType);
                 });
 
-                card.appendChild(input);
-                card.appendChild(updateBtn);
+                actions.appendChild(updateBtn);
+                card.appendChild(actions);
             }
 
-            const removeBtn = document.createElement('a');
-            removeBtn.className = 'text-action text-danger';
-            removeBtn.href = '#';
-            removeBtn.textContent = 'Remove';
-            removeBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                removeFeature(key);
-            });
-
-            card.appendChild(removeBtn);
             container.appendChild(card);
         });
     }

@@ -71,9 +71,9 @@ $conn->close();
     <style>
         :root {
             --primary: #00e676;
-            --bg: #0a0e27;
-            --card: #1a1f3a;
-            --accent: #2979ff;
+            --bg: #0a0a0a;
+            --card: #1a1a1a;
+            --accent: #0d9488;
             --danger: #ff5252;
             --text: #e0e0e0;
             --text-muted: #a0a0a0;
@@ -84,8 +84,8 @@ $conn->close();
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, #1a2847 50%, #0f1d3a 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
             color: var(--text);
             display: flex;
             align-items: center;
@@ -101,8 +101,8 @@ $conn->close();
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at 20% 50%, rgba(41, 121, 255, 0.1) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 80%, rgba(0, 230, 118, 0.08) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 20% 50%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(0, 230, 118, 0.05) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
         }
@@ -115,13 +115,12 @@ $conn->close();
         }
 
         .card {
-            background: linear-gradient(135deg, #1e2749 0%, #1a1f3a 100%);
-            border: 1px solid rgba(41, 121, 255, 0.2);
-            border-radius: 24px;
-            padding: 40px 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
-                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(26, 26, 26, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
         }
 
         .header {
@@ -130,18 +129,17 @@ $conn->close();
         }
 
         .logo {
-            display: inline-block;
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            border-radius: 16px;
-            display: flex;
+            display: inline-flex;
+            width: 44px;
+            height: 44px;
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            border-radius: 8px;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
-            font-weight: 900;
-            font-size: 24px;
-            box-shadow: 0 8px 20px rgba(41, 121, 255, 0.3);
+            margin: 0 auto 16px;
+            font-size: 20px;
+            color: var(--accent);
         }
 
         h1 {
@@ -178,13 +176,14 @@ $conn->close();
 
         input {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(41, 121, 255, 0.2);
-            border-radius: 12px;
+            height: 42px;
+            padding: 0 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
             color: var(--text);
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: inherit;
         }
 
@@ -206,19 +205,19 @@ $conn->close();
 
         .btn {
             width: 100%;
-            padding: 12px 24px;
+            height: 42px;
+            padding: 0 24px;
             margin-top: 20px;
             border: 0;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent), #1e53e5);
+            border-radius: 6px;
+            background: var(--accent);
             color: #fff;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 14px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(41, 121, 255, 0.3);
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
@@ -239,8 +238,7 @@ $conn->close();
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(41, 121, 255, 0.4);
+            background: #00c853;
         }
 
         .btn:active {
@@ -307,9 +305,9 @@ $conn->close();
         }
 
         .links a:hover {
-            background: rgba(41, 121, 255, 0.1);
-            border-color: rgba(41, 121, 255, 0.3);
-            color: #b9d3ff;
+            background: rgba(13, 148, 136, 0.1);
+            border-color: rgba(13, 148, 136, 0.3);
+            color: #5eead4;
         }
 
         @media (max-width: 480px) {
