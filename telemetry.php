@@ -1,4 +1,5 @@
 <?php
+define('SKIP_API_HEADERS', true);
 require_once __DIR__ . '/api/auth_helpers.php';
 require_page_auth();
 $loggedInUserName = get_logged_in_user_name();
@@ -123,7 +124,7 @@ $uStmt->close();
             background: rgba(13, 148, 136, 0.2);
             border: 1px solid rgba(13, 148, 136, 0.3);
             border-radius: 4px;
-            font-family: monospace;
+            font-family: inherit;
             font-size: 0.8rem;
             color: #5eead4;
         }

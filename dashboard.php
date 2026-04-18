@@ -146,7 +146,7 @@ $uStmt->close();
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 16px;
-            font-family: 'Courier New', monospace;
+            font-family: inherit;
             box-shadow: 0 2px 6px rgba(13, 148, 136, 0.05);
         }
 
@@ -159,8 +159,9 @@ $uStmt->close();
             border-radius: 8px;
             word-break: break-all;
             border: 1px solid rgba(0, 230, 118, 0.2);
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1.5;
+            font-family: inherit;
         }
 
         .copy-hint {
@@ -663,27 +664,31 @@ $uStmt->close();
     </div>
 
     <div id="conn-details" class="conn-info">
-        <div style="font-size: 0.8rem; color: #aeb5c0; margin-bottom: 4px;">READ API (ESP32):</div>
-        <div class="url-row">
-            <code id="esp-url" class="url-display" style="margin-top:0; flex:1 1 auto;"></code>
-            <button id="copy-url-btn" class="copy-url-btn" type="button" aria-label="Copy read URL" title="Copy read URL">
-                <span class="copy-icon" aria-hidden="true"></span>
-            </button>
-        </div>
-
-        <div style="font-size: 0.8rem; color: #aeb5c0; margin-top: 12px; margin-bottom: 4px;">WEBHOOK API (TELEMETRY):</div>
-        <div class="url-row">
-            <code id="webhook-url" class="url-display" style="margin-top:0; flex:1 1 auto;"></code>
-            <button id="copy-webhook-btn" class="copy-url-btn" type="button" aria-label="Copy webhook URL" title="Copy webhook URL">
-                <span class="copy-icon" aria-hidden="true"></span>
-            </button>
-        </div>
-
-        <div style="margin-top: 14px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between;">
-            <div>
-                <span style="color: #64ffda;">Plan: <?php echo strtoupper($userType); ?></span>
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px;">
+                <span style="font-size: 0.75rem; color: #aeb5c0;">READ API</span>
+                <button id="copy-url-btn" style="background:none; border:none; color:var(--primary); cursor:pointer; font-weight:bold; font-size:0.7rem;">[COPY URL]</button>
             </div>
-            <a id="telemetry-link" href="#" style="color: var(--primary); text-decoration: none; font-weight: 600;">VIEW HISTORY →</a>
+            <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px;">
+                <span style="font-size: 0.75rem; color: #aeb5c0;">WEBHOOK API</span>
+                <button id="copy-webhook-btn" style="background:none; border:none; color:var(--primary); cursor:pointer; font-weight:bold; font-size:0.7rem;">[COPY URL]</button>
+            </div>
+            <div id="esp-url" style="display:none;"></div>
+            <div id="webhook-url" style="display:none;"></div>
+        </div>
+
+        <div id="latest-data-panel" style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); border-radius: 6px; padding: 12px;">
+            <div style="font-size: 0.7rem; color: #5eead4; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Latest Readings</div>
+            <div id="latest-payload" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <span style="color: var(--text-muted); font-size: 0.8rem;">Waiting for device...</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 12px; font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <span style="color: #64ffda; font-weight: bold;"><?php echo strtoupper($userType); ?> PLAN</span>
+            </div>
+            <a id="telemetry-link" href="#" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.75rem;">DEVICE HISTORY →</a>
         </div>
     </div>
 
@@ -908,6 +913,27 @@ $uStmt->close();
             }
 
             container.appendChild(card);
+        });
+
+        renderLatestData(flatState);
+    }
+
+    function renderLatestData(flatState) {
+        const container = document.getElementById('latest-payload');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        const keys = Object.keys(flatState);
+        if (!keys.length) {
+            container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">No data yet.</span>';
+            return;
+        }
+
+        keys.forEach(key => {
+            const badge = document.createElement('div');
+            badge.style.cssText = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;';
+            badge.innerHTML = `<span style="color: var(--text-muted);">${key}:</span> <span style="font-weight: bold; color: #fff;">${flatState[key]}</span>`;
+            container.appendChild(badge);
         });
     }
 
@@ -1165,7 +1191,7 @@ $uStmt->close();
         if (state.currentDevice && !isEditingValue()) {
             loadFeatures();
         }
-    }, 3000);
+    }, 5000);
 </script>
 </body>
 </html>
