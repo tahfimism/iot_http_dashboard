@@ -11,14 +11,15 @@ $userId = resolve_uid_to_user_id($conn);
 if ($userId <= 0) {
     // resolve_uid_to_user_id already handles 401 if it fails but uid was provided.
     // However, if uid was missing, it returns 0.
-    http_response_code(401);
-    echo json_encode(["error" => "Missing or invalid uid"]);
+    header("Content-Type: text/plain");
+    echo "ERROR: Missing or invalid uid";
     exit;
 }
 
 $device_id = $_GET['device_id'] ?? '';
 if ($device_id === '') {
-    echo json_encode(["error" => "Missing device_id"]);
+    header("Content-Type: text/plain");
+    echo "ERROR: Missing device_id";
     exit;
 }
 
@@ -28,7 +29,8 @@ $checkStmt->bind_param("si", $device_id, $userId);
 $checkStmt->execute();
 if (!$checkStmt->fetch()) {
     $checkStmt->close();
-    echo json_encode(["error" => "Device not found or unauthorized"]);
+    header("Content-Type: text/plain");
+    echo "ERROR: Device not found or unauthorized";
     exit;
 }
 $checkStmt->close();
@@ -54,7 +56,8 @@ foreach ($_GET as $key => $value) {
 }
 
 if (empty($payload)) {
-    echo json_encode(["error" => "Empty payload"]);
+    header("Content-Type: text/plain");
+    echo "ERROR: Empty payload";
     exit;
 }
 
@@ -132,12 +135,8 @@ $updateStatusStmt->bind_param("ssi", $updatedJson, $device_id, $userId);
 $updateStatusStmt->execute();
 $updateStatusStmt->close();
 
-echo json_encode([
-    "status" => "success",
-    "recorded_at" => date("Y-m-d H:i:s"),
-    "data_logged" => $payload,
-    "limit_info" => ["current" => min($currentCount + 1, $maxRecords), "max" => $maxRecords]
-]);
+header("Content-Type: text/plain");
+echo "OK";
 
 $conn->close();
 ?>

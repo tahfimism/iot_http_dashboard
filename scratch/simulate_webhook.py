@@ -3,11 +3,11 @@ import time
 import random
 
 # --- CONFIGURATION ---
-BASE_URL = "http://localhost/firefly/iot/api/webhook.php"
-DEVICE_ID = "fan"
-USER_UID = "329bf2ca-3b25-11f1-8bb2-b34956d21a0e"
+BASE_URL = "https://fiftech.biz/app/iot/api/webhook.php"
+DEVICE_ID = "first_device"
+USER_UID = "e6967049a2fcf8d7ea5bcc2e54653eb4"
 INTERVAL = 1  # seconds
-METHOD = "GET"  # Change to "GET" to use GET-based webhook simulation
+METHOD = "POST"  # Change to "GET" to use GET-based webhook simulation
 
 def simulate_device():
     print(f"Starting {METHOD} simulation for device: {DEVICE_ID}...")
