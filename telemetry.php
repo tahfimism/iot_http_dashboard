@@ -184,22 +184,53 @@ $uStmt->close();
     </div>
 
     <div class="header">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
             <div>
                 <h1><?php echo htmlspecialchars($device_id); ?></h1>
                 <p class="subtitle">Historical telemetry logs and sensor visualization</p>
             </div>
-            <button onclick="clearHistory()" class="btn-danger">CLEAR HISTORY</button>
+            <div style="display: flex; gap: 8px;">
+                <select id="time-range" onchange="toggleCustomRange()" style="background: var(--card); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                    <option value="1">Last 1 Hour</option>
+                    <option value="12">Last 12 Hours</option>
+                    <option value="24" selected>Last 1 Day</option>
+                    <option value="72">Last 3 Days</option>
+                    <option value="168">Last 7 Days</option>
+                    <option value="360">Last 15 Days</option>
+                    <option value="720">Last 30 Days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+                <div id="custom-range-picker" style="display: none; gap: 8px; align-items: center;">
+                    <input type="datetime-local" id="custom-from" style="background: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 6px; border-radius: 4px; font-size: 0.8rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">to</span>
+                    <input type="datetime-local" id="custom-to" style="background: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 6px; border-radius: 4px; font-size: 0.8rem;">
+                    <button onclick="updateFilters()" class="btn-danger" style="border-color: var(--primary); color: var(--primary); padding: 6px 12px;">GO</button>
+                    <button onclick="cancelCustomRange()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">&times;</button>
+                </div>
+                <button onclick="clearHistory()" class="btn-danger">CLEAR HISTORY</button>
+            </div>
         </div>
 
         <div id="chart-panel" class="chart-container" style="display: none;">
             <canvas id="telemetryChart"></canvas>
         </div>
-        <div id="no-data" class="empty-state">No telemetry data found for this device yet.</div>
+        <div id="no-data" class="empty-state">No telemetry data found for this period.</div>
     </div>
 
     <div class="panel">
-        <h2 style="font-size: 1.1rem; margin-top: 0;">Raw Logs</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="font-size: 1.1rem; margin: 0;">Raw Logs</h2>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Rows:</span>
+                <select id="page-size" onchange="updateFilters()" style="background: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
+                    <option value="20">20</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                </select>
+            </div>
+        </div>
+        
         <div id="logs-container" class="table-container">
             <table>
                 <thead>
@@ -213,6 +244,12 @@ $uStmt->close();
                 </tbody>
             </table>
         </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px;">
+            <button id="prev-btn" onclick="changePage(-1)" class="btn-danger" style="border-color: var(--accent); color: var(--accent);">← Newer</button>
+            <span id="page-info" style="font-size: 0.9rem; color: var(--text-muted);">Page 1</span>
+            <button id="next-btn" onclick="changePage(1)" class="btn-danger" style="border-color: var(--accent); color: var(--accent);">Older →</button>
+        </div>
     </div>
 </div>
 
@@ -221,12 +258,43 @@ $uStmt->close();
 <script>
     const deviceId = "<?php echo $device_id; ?>";
     let myChart = null;
+    let currentPage = 0;
+    let isLoading = false;
 
     function showToast(msg) {
         const t = document.getElementById('toast');
         t.textContent = msg;
         t.className = 'toast show';
         setTimeout(() => t.className = 'toast', 2000);
+    }
+
+    function toggleCustomRange() {
+        const selector = document.getElementById('time-range');
+        const picker = document.getElementById('custom-range-picker');
+        if (selector.value === 'custom') {
+            selector.style.display = 'none';
+            picker.style.display = 'flex';
+        } else {
+            updateFilters();
+        }
+    }
+
+    function cancelCustomRange() {
+        document.getElementById('time-range').style.display = 'block';
+        document.getElementById('time-range').value = '24';
+        document.getElementById('custom-range-picker').style.display = 'none';
+        updateFilters();
+    }
+
+    function updateFilters() {
+        currentPage = 0;
+        loadTelemetry();
+    }
+
+    function changePage(delta) {
+        if (isLoading) return;
+        currentPage = Math.max(0, currentPage + delta);
+        loadTelemetry();
     }
 
     async function clearHistory() {
@@ -247,24 +315,73 @@ $uStmt->close();
     }
 
     async function loadTelemetry() {
+        if (isLoading) return;
+        isLoading = true;
+
+        const range = document.getElementById('time-range').value;
+        const pageSize = document.getElementById('page-size').value;
+        
+        let fromIso = '';
+        let toIso = '';
+
+        if (range === 'custom') {
+            const rawFrom = document.getElementById('custom-from').value;
+            const rawTo = document.getElementById('custom-to').value;
+            if (rawFrom) fromIso = rawFrom.replace('T', ' ');
+            if (rawTo) toIso = rawTo.replace('T', ' ');
+        } else {
+            const fromDate = new Date();
+            fromDate.setHours(fromDate.getHours() - parseInt(range));
+            fromIso = fromDate.toISOString().slice(0, 19).replace('T', ' ');
+        }
+
+        const offset = currentPage * pageSize;
+        const url = `api/telemetry_read.php?device_id=${encodeURIComponent(deviceId)}&limit=${pageSize}&offset=${offset}&from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`;
+
         try {
-            const res = await fetch(`api/telemetry_read.php?device_id=${encodeURIComponent(deviceId)}&limit=100`);
+            const res = await fetch(url);
             const data = await res.json();
             
             if (!data.records || data.records.length === 0) {
-                document.getElementById('table-body').innerHTML = '<tr><td colspan="2" class="empty-state">No records found</td></tr>';
+                if (currentPage === 0) {
+                    document.getElementById('table-body').innerHTML = '<tr><td colspan="2" class="empty-state">No records found for this period</td></tr>';
+                    document.getElementById('chart-panel').style.display = 'none';
+                    document.getElementById('no-data').style.display = 'block';
+                } else {
+                    showToast('No more older records');
+                    currentPage--; 
+                }
+                isLoading = false;
+                updatePaginationUI(0, pageSize);
                 return;
             }
 
             document.getElementById('no-data').style.display = 'none';
             document.getElementById('chart-panel').style.display = 'block';
 
-            renderChart(data.records);
+            // For the chart, we want to see the whole range, not just the page.
+            // If on page 0, fetch a larger set (last 500) specifically for chart.
+            if (currentPage === 0) {
+                const chartUrl = `api/telemetry_read.php?device_id=${encodeURIComponent(deviceId)}&limit=500&from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`;
+                fetch(chartUrl).then(r => r.json()).then(d => renderChart(d.records));
+            }
+            
             renderTable(data.records);
+            updatePaginationUI(data.records.length, pageSize);
         } catch (e) {
             console.error(e);
             document.getElementById('table-body').innerHTML = '<tr><td colspan="2" class="empty-state">Error loading telemetry</td></tr>';
+        } finally {
+            isLoading = false;
         }
+    }
+
+    function updatePaginationUI(recordCount, pageSize) {
+        document.getElementById('page-info').textContent = `Page ${currentPage + 1}`;
+        document.getElementById('prev-btn').disabled = (currentPage === 0);
+        document.getElementById('next-btn').disabled = (recordCount < pageSize);
+        document.getElementById('prev-btn').style.opacity = (currentPage === 0) ? '0.3' : '1';
+        document.getElementById('next-btn').style.opacity = (recordCount < pageSize) ? '0.3' : '1';
     }
 
     function renderChart(records) {

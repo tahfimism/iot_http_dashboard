@@ -10,16 +10,37 @@ $userId = resolve_read_user_id($conn);
 $device_id = $_GET['device_id'] ?? '';
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+$from = $_GET['from'] ?? '';
+$to = $_GET['to'] ?? '';
 
 if ($device_id === '') {
     echo json_encode(["error" => "Missing device_id"]);
     exit;
 }
 
-// 1. Fetch telemetry records
-// We order by recorded_at DESC to get newest first
-$stmt = $conn->prepare("SELECT payload, recorded_at FROM device_telemetry WHERE user_id = ? AND device_id = ? ORDER BY recorded_at DESC LIMIT ? OFFSET ?");
-$stmt->bind_param("isii", $userId, $device_id, $limit, $offset);
+// 1. Build Query with filters
+$query = "SELECT payload, recorded_at FROM device_telemetry WHERE user_id = ? AND device_id = ?";
+$params = [$userId, $device_id];
+$types = "is";
+
+if ($from !== '') {
+    $query .= " AND recorded_at >= ?";
+    $params[] = $from;
+    $types .= "s";
+}
+if ($to !== '') {
+    $query .= " AND recorded_at <= ?";
+    $params[] = $to;
+    $types .= "s";
+}
+
+$query .= " ORDER BY recorded_at DESC LIMIT ? OFFSET ?";
+$params[] = $limit;
+$params[] = $offset;
+$types .= "ii";
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param($types, ...$params);
 $stmt->execute();
 $stmt->bind_result($payloadJson, $timestamp);
 

@@ -59,6 +59,7 @@ if (empty($payload)) {
 }
 
 // 3. Enforce Data Caps based on User Tier
+$config = include 'iot_config.php';
 $tierStmt = $conn->prepare("SELECT user_type FROM iot_users WHERE id = ? LIMIT 1");
 $tierStmt->bind_param("i", $userId);
 $tierStmt->execute();
@@ -66,7 +67,8 @@ $tierStmt->bind_result($userType);
 $tierStmt->fetch();
 $tierStmt->close();
 
-$maxRecords = ($userType === 'premium') ? 10000 : 500;
+$limits = $config['telemetry'];
+$maxRecords = ($userType === 'premium') ? $limits['max_records_premium'] : $limits['max_records_free'];
 
 // Count existing records
 $countStmt = $conn->prepare("SELECT COUNT(*) FROM device_telemetry WHERE user_id = ? AND device_id = ?");

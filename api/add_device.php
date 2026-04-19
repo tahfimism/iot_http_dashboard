@@ -11,6 +11,29 @@ if ($device_id === '') {
     exit;
 }
 
+// Check Device Limits
+$config = include 'iot_config.php';
+$uStmt = $conn->prepare("SELECT user_type FROM iot_users WHERE id = ? LIMIT 1");
+$uStmt->bind_param("i", $userId);
+$uStmt->execute();
+$uStmt->bind_result($userType);
+$uStmt->fetch();
+$uStmt->close();
+
+$maxDevices = ($userType === 'premium') ? $config['devices']['max_premium'] : $config['devices']['max_free'];
+
+$countStmt = $conn->prepare("SELECT COUNT(*) FROM device_status WHERE user_id = ?");
+$countStmt->bind_param("i", $userId);
+$countStmt->execute();
+$countStmt->bind_result($currentDeviceCount);
+$countStmt->fetch();
+$countStmt->close();
+
+if ($currentDeviceCount >= $maxDevices) {
+    echo json_encode(["error" => "Device limit reached for your account ($maxDevices devices). Upgrade to Premium for more."]);
+    exit;
+}
+
 $checkStmt = $conn->prepare("SELECT 1 FROM device_status WHERE device_id = ? AND user_id = ? LIMIT 1");
 $checkStmt->bind_param("si", $device_id, $userId);
 $checkStmt->execute();
