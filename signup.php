@@ -30,32 +30,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Password and confirm password do not match.';
     } else {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare('INSERT INTO iot_users (name, email, phone_number, password_hash) VALUES (?, ?, ?, ?)');
+        $stmt = $conn->prepare('INSERT INTO iot_users (uid, name, email, phone_number, password_hash) VALUES (?, ?, ?, ?, ?)');
         if ($stmt === false) {
-            $stmt = $conn->prepare('INSERT INTO iot_users (name, email, number, password_hash) VALUES (?, ?, ?, ?)');
+            $stmt = $conn->prepare('INSERT INTO iot_users (uid, name, email, number, password_hash) VALUES (?, ?, ?, ?, ?)');
         }
 
         if ($stmt === false) {
-            $error = 'Could not prepare signup query. Please verify iot_users columns.';
+            $error = 'Could not prepare signup query. Please verify your database columns.';
         } else {
-        $stmt->bind_param('ssss', $name, $email, $phoneNumber, $passwordHash);
+            $uid = bin2hex(random_bytes(16));
+            $stmt->bind_param('sssss', $uid, $name, $email, $phoneNumber, $passwordHash);
 
-        if ($stmt->execute()) {
-            $_SESSION['user_id'] = (int)$stmt->insert_id;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['user_email'] = $email;
+            try {
+                if ($stmt->execute()) {
+                    $_SESSION['user_id'] = (int)$stmt->insert_id;
+                    $_SESSION['user_name'] = $name;
+                    $_SESSION['user_email'] = $email;
+                    $stmt->close();
+                    $conn->close();
+                    header('Location: dashboard.php');
+                    exit;
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() === 1062) {
+                    $error = 'Email or phone number already exists.';
+                } else {
+                    $error = 'Could not create account: ' . $e->getMessage();
+                }
+            }
             $stmt->close();
-            $conn->close();
-            header('Location: dashboard.php');
-            exit;
-        }
-
-        if ($conn->errno === 1062) {
-            $error = 'Email or phone number already exists.';
-        } else {
-            $error = 'Could not create account. Please try again.';
-        }
-        $stmt->close();
         }
     }
 }

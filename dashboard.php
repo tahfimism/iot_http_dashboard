@@ -54,7 +54,7 @@ $uStmt->close();
         }
 
         .container {
-            max-width: 760px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -677,10 +677,10 @@ $uStmt->close();
             <div id="webhook-url" style="display:none;"></div>
         </div>
 
-        <div id="latest-data-panel" style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); border-radius: 6px; padding: 12px;">
-            <div style="font-size: 0.7rem; color: #5eead4; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Latest Readings</div>
-            <div id="latest-payload" style="display: flex; flex-wrap: wrap; gap: 6px;">
-                <span style="color: var(--text-muted); font-size: 0.8rem;">Waiting for device...</span>
+        <div id="latest-data-panel" style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); border-radius: 8px; padding: 16px;">
+            <div style="font-size: 0.8rem; color: #5eead4; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.8px; opacity: 0.9;">Latest Readings</div>
+            <div id="latest-payload" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <span style="color: var(--text-muted); font-size: 1rem;">Waiting for device...</span>
             </div>
         </div>
 
@@ -829,6 +829,9 @@ $uStmt->close();
     function renderFeatures(payload) {
         const container = document.getElementById('features-container');
         container.innerHTML = '';
+        
+        // Clear latest data first to avoid showing stale data from previous device
+        renderLatestData({});
 
         if (payload && payload.error) {
             renderEmpty(payload.error);
@@ -915,24 +918,28 @@ $uStmt->close();
             container.appendChild(card);
         });
 
-        renderLatestData(flatState);
+        renderLatestData(typedState);
     }
 
-    function renderLatestData(flatState) {
+    function renderLatestData(typedState) {
         const container = document.getElementById('latest-payload');
         if (!container) return;
         container.innerHTML = '';
         
-        const keys = Object.keys(flatState);
-        if (!keys.length) {
-            container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">No data yet.</span>';
+        const keys = Object.keys(typedState || {});
+        // Only show items that came from the device webhook (telemetry source)
+        const telemetryKeys = keys.filter(k => typedState[k] && typedState[k].source === 'telemetry');
+        
+        if (!telemetryKeys.length) {
+            container.innerHTML = '<span style="color: var(--text-muted); font-size: 1rem;">No telemetry logged yet.</span>';
             return;
         }
 
-        keys.forEach(key => {
+        telemetryKeys.forEach(key => {
+            const entry = typedState[key];
             const badge = document.createElement('div');
-            badge.style.cssText = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;';
-            badge.innerHTML = `<span style="color: var(--text-muted);">${key}:</span> <span style="font-weight: bold; color: #fff;">${flatState[key]}</span>`;
+            badge.style.cssText = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 6px; font-size: 0.95rem;';
+            badge.innerHTML = `<span style="color: var(--text-muted);">${key}:</span> <span style="font-weight: bold; color: #fff;">${entry.value}</span>`;
             container.appendChild(badge);
         });
     }
@@ -1081,6 +1088,13 @@ $uStmt->close();
         document.getElementById('telemetry-link').href = `telemetry.php?device_id=${encodeURIComponent(state.currentDevice)}`;
         
         setPanelVisibility(true);
+        
+        // Immediate feedback: clear previous readings and show waiting state
+        const payloadContainer = document.getElementById('latest-payload');
+        if (payloadContainer) {
+            payloadContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 1rem;">Fetching latest data...</span>';
+        }
+
         loadFeatures();
     }
 
@@ -1094,6 +1108,7 @@ $uStmt->close();
             renderFeatures(payload);
         } catch (error) {
             renderEmpty('Could not load device state.');
+            renderLatestData({}); // Clear stale data on network error
             showToast(error.message || 'Load failed', 'error');
         }
     }

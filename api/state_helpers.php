@@ -32,12 +32,14 @@ function normalize_typed_state($decodedState) {
             }
             $typedState[$key] = [
                 'value' => $entry['value'],
-                'type' => $entryType
+                'type' => $entryType,
+                'source' => $entry['source'] ?? ''
             ];
         } else {
             $typedState[$key] = [
                 'value' => $entry,
-                'type' => infer_type_from_value($entry)
+                'type' => infer_type_from_value($entry),
+                'source' => ''
             ];
         }
     }

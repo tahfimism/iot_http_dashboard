@@ -46,7 +46,8 @@ if (!$isValid) {
 
 $currentTypedState[$key] = [
 	'value' => $typedValue,
-	'type' => $resolvedType
+	'type' => $resolvedType,
+	'source' => 'manual'
 ];
 
 $updatedJson = json_encode($currentTypedState);

@@ -120,7 +120,8 @@ foreach ($payload as $key => $val) {
     if ($isValid) {
         $currentTypedState[$key] = [
             'value' => $castedValue,
-            'type' => $type
+            'type' => $type,
+            'source' => 'telemetry'
         ];
     }
 }
