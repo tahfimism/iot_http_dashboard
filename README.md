@@ -1,4 +1,4 @@
-# Firefly IoT — Project Blueprint & Documentation
+# IoT Dashboard — Project Blueprint & Documentation
 
 ## 1. Project Overview
 
